@@ -1,0 +1,73 @@
+# redis从服务器
+
+# master IP port
+slaveof 192.168.8.112 6379
+# 登录密码
+masterauth hx202823 
+
+# 守护进程的方式运行redis
+daemonize yes
+pidfile /usr/local/redis/var/redis.pid
+
+# redis绑定的IP
+bind 127.0.0.1 192.168.8.8
+port 6379
+
+# redis客户端连接超时时常
+timeout 300
+# tcp三次握手建立连接后,server每60s向client发送syn探测对方是否挂掉
+tcp-keepalive 60
+
+# 日志级别
+loglevel notice
+logfile /usr/local/redis/var/redis.log
+
+# 数据库的总量0-15
+databases 16
+
+# RDB持久化
+
+# 每900S至少有1个key改变,就触发一次持久化
+save 900 1
+save 300 10
+save 60 10000
+# 禁止RDB持久化
+#save ""
+
+# RDB进行压缩
+rdbcompression yes
+# 内存快照的文件名
+dbfilename dump.rdb
+# 内存快照文件的路径
+dir /usr/local/redis/var/
+# 开启RDB数据校验
+rdbchecksum yes
+
+
+# 开启AOF持久化
+appendonly yes
+# aof日志文件名
+appendfilename "appendonly.aof"
+# 每秒钟同步一次写操作到aof日志中
+appendfsync everysec
+# 不在重写AOF时再追加新的写操作，避免磁盘IO冲突
+no-appendfsync-on-rewrite yes
+# aof日志增幅为100%，再去重写aof日志
+auto-aof-rewrite-percentage 100
+
+
+# 设置客户端登陆密码
+#requirepass hx202823
+# 禁止CONFIG命令
+#rename-command CONFIG ""
+
+# 慢查询日志
+# 查询时间超过10000us将命令写入日志
+slowlog-log-slower-than 10000
+# 日志长度，最多128条
+slowlog-max-len 128
+
+# 10s ping一次redis-master
+repl-ping-slave-period 10
+# ping 不通主的超时时间 60s
+repl-timeout 60
